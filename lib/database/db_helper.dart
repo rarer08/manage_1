@@ -132,7 +132,7 @@ class DBHelper {
   // 获取所有密码条目
   Future<List<PasswordItem>> queryAllRows() async {
     Database db = await instance.database;
-    List<Map<String, dynamic>> maps = await db.query(table, orderBy: '$columnUpdatedAt DESC');
+    List<Map<String, dynamic>> maps = await db.query(table, orderBy: '$columnTitle ASC');
     return List.generate(maps.length, (i) {
       return PasswordItem.fromMap(maps[i]);
     });
@@ -180,7 +180,7 @@ class DBHelper {
       table,
       where: '''$columnTitle LIKE ? OR $columnUsername LIKE ? OR $columnWebsite LIKE ?''',
       whereArgs: ['%$query%', '%$query%', '%$query%'],
-      orderBy: '$columnUpdatedAt DESC',
+      orderBy: '$columnTitle ASC',
     );
     return List.generate(maps.length, (i) {
       return PasswordItem.fromMap(maps[i]);

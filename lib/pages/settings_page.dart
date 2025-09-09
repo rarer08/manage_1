@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/password_provider.dart';
 import '../utils/settings_helper.dart';
+import '../utils/url_launcher_helper.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -168,6 +169,30 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton(
               onPressed: _changeMasterPassword,
               child: const Text('修改主密码'),
+            ),
+            const SizedBox(height: 40),
+            const Text(
+              '关于',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () async {
+                const url = 'https://example.com';
+                final success = await UrlLauncherHelper.launchUrl(url);
+                if (!success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('无法打开链接')),
+                  );
+                }
+              },
+              child: const Text(
+                '访问我们的网站',
+                style: TextStyle(
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
           ],
         ),

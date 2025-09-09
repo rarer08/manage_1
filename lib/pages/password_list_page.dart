@@ -6,6 +6,7 @@ import '../providers/password_provider.dart';
 import '../routes/app_routes.dart';
 import 'auth_page.dart';
 import 'add_edit_password_page.dart';
+import '../utils/url_launcher_helper.dart';
 
 class PasswordListPage extends StatefulWidget {
   const PasswordListPage({super.key});
@@ -373,11 +374,36 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
               Icon(icon, size: 16, color: Colors.grey[600]),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  value,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 16),
-                ),
+                child: label == '网站' && value != '未设置'
+                    ? GestureDetector(
+                        onTap: () async {
+                          String url = value;
+                          // 确保URL有协议前缀
+                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://$url';
+                          }
+                          bool success = await UrlLauncherHelper.launchUrl(url);
+                          if (!success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('无法打开链接')),
+                            );
+                          }
+                        },
+                        child: Text(
+                          value,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        value,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 16),
+                      ),
               ),
               const SizedBox(width: 8),
               IconButton(
