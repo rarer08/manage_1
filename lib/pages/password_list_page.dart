@@ -43,6 +43,14 @@ class _PasswordListPageState extends State<PasswordListPage> {
         title: const Text('密码管理器'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: () {
+              AppRoutes.navigateToPasswordListCompact(context);
+            },
+            tooltip: '切换到简洁视图',
+          ),
+          const SizedBox(width: 16),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               passwordProvider.logout();

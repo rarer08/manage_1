@@ -7,8 +7,9 @@ import '../routes/app_routes.dart';
 
 class AddEditPasswordPage extends StatefulWidget {
   final PasswordItem? item;
+  final bool isViewOnly;
 
-  const AddEditPasswordPage({super.key, this.item});
+  const AddEditPasswordPage({super.key, this.item, this.isViewOnly = false});
 
   @override
   State<AddEditPasswordPage> createState() => _AddEditPasswordPageState();
@@ -105,7 +106,11 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.item == null ? '添加密码' : '编辑密码'),
+        title: Text(widget.isViewOnly ? '查看密码' : (widget.item == null ? '添加密码' : '编辑密码')),
+        leading: widget.isViewOnly ? IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => AppRoutes.navigateBack(context),
+        ) : null,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -118,11 +123,12 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 // 标题
                 TextFormField(
                   controller: _titleController,
+                  enabled: !widget.isViewOnly,
                   decoration: const InputDecoration(
                     labelText: '标题',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
+                  validator: widget.isViewOnly ? null : (value) {
                     if (value == null || value.isEmpty) {
                       return '请输入标题';
                     }
@@ -134,11 +140,12 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 // 用户名
                 TextFormField(
                   controller: _usernameController,
+                  enabled: !widget.isViewOnly,
                   decoration: const InputDecoration(
                     labelText: '用户名',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
+                  validator: widget.isViewOnly ? null : (value) {
                     if (value == null || value.isEmpty) {
                       return '请输入用户名';
                     }
@@ -150,11 +157,12 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 // 密码
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: _obscurePassword,
+                  enabled: !widget.isViewOnly,
+                  obscureText: widget.isViewOnly ? false : _obscurePassword,
                   decoration: InputDecoration(
                     labelText: '密码',
                     border: const OutlineInputBorder(),
-                    suffixIcon: Row(
+                    suffixIcon: widget.isViewOnly ? null : Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
@@ -178,7 +186,7 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                       ],
                     ),
                   ),
-                  validator: (value) {
+                  validator: widget.isViewOnly ? null : (value) {
                     if (value == null || value.isEmpty) {
                       return '请输入密码';
                     }
@@ -186,7 +194,7 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                   },
                 ),
                 const SizedBox(height: 8),
-                ElevatedButton.icon(
+                widget.isViewOnly ? Container() : ElevatedButton.icon(
                   onPressed: _generatePassword,
                   icon: const Icon(Icons.key),
                   label: const Text('生成强密码'),
@@ -199,10 +207,11 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 // Website
                 TextFormField(
                   controller: _websiteController,
+                  enabled: !widget.isViewOnly,
                   decoration: InputDecoration(
                     labelText: '网址',
                     border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
+                    suffixIcon: widget.isViewOnly ? null : IconButton(
                       icon: const Icon(Icons.copy),
                       onPressed: () {
                         if (_websiteController.text.isNotEmpty) {
@@ -218,6 +227,7 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 // 备注
                 TextFormField(
                   controller: _notesController,
+                  enabled: !widget.isViewOnly,
                   decoration: const InputDecoration(
                     labelText: '备注',
                     border: OutlineInputBorder(),
@@ -227,7 +237,7 @@ class _AddEditPasswordPageState extends State<AddEditPasswordPage> {
                 const SizedBox(height: 32),
 
                 // 保存按钮
-                ElevatedButton(
+                widget.isViewOnly ? Container() : ElevatedButton(
                   onPressed: _isLoading ? null : _savePassword,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15),

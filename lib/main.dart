@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/password_list_page.dart';
 import 'providers/password_provider.dart';
+import 'routes/app_routes.dart';
 
 void main() {
   runApp(
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // 设置初始页面为密码列表页
-      home: const PasswordListPage(),
+      initialRoute: AppRoutes.passwordList,
+      routes: AppRoutes.getRoutes(),
       // 禁用调试标志
       debugShowCheckedModeBanner: false,
     );
