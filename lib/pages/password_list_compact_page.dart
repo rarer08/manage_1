@@ -5,6 +5,7 @@ import '../providers/password_provider.dart';
 import '../routes/app_routes.dart';
 import 'auth_page.dart';
 import 'add_edit_password_page.dart';
+import '../utils/clipboard_helper.dart';
 
 class PasswordListCompactPage extends StatefulWidget {
   const PasswordListCompactPage({super.key});
@@ -130,6 +131,8 @@ class PasswordItemCompactTile extends StatelessWidget {
     required this.onTap,
   });
 
+  // 该方法已迁移到ClipboardHelper工具类中
+
   // 根据item的id生成不同的背景颜色
   Color _getBackgroundColor() {
     final int hash = item.id.hashCode;
@@ -182,10 +185,27 @@ class PasswordItemCompactTile extends StatelessWidget {
                   const Icon(Icons.person, size: 14, color: Colors.grey),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      item.username,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    child: InkWell(
+                      onTap: () =>
+                          ClipboardHelper.copyToClipboard(context, item.username, '用户名'),
+                      child: Tooltip(
+                        message: '点击复制',
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.transparent,
+                          ),
+                          padding: const EdgeInsets.all(2),
+                          child: Text(
+                            item.username,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -202,10 +222,30 @@ class PasswordItemCompactTile extends StatelessWidget {
                   const Icon(Icons.link, size: 14, color: Colors.blue),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      item.website.isNotEmpty ? item.website : '未设置',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 12, color: Colors.blue),
+                    child: InkWell(
+                      onTap: () => ClipboardHelper.copyToClipboard(
+                        context,
+                        item.website.isNotEmpty ? item.website : '',
+                        '网站',
+                      ),
+                      child: Tooltip(
+                        message: '点击复制',
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.transparent,
+                          ),
+                          padding: const EdgeInsets.all(2),
+                          child: Text(
+                            item.website.isNotEmpty ? item.website : '未设置',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Expanded(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/password_item.dart';
 import '../providers/password_provider.dart';
@@ -7,6 +6,7 @@ import '../routes/app_routes.dart';
 import 'auth_page.dart';
 import 'add_edit_password_page.dart';
 import '../utils/url_launcher_helper.dart';
+import '../utils/clipboard_helper.dart';
 
 class PasswordListPage extends StatefulWidget {
   const PasswordListPage({super.key});
@@ -217,12 +217,7 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
     return colors[colorIndex];
   }
 
-  void _copyToClipboard(String text, String fieldName) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('已复制$fieldName到剪贴板')));
-  }
+  // 该方法已迁移到ClipboardHelper工具类中
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +279,7 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
                         value: widget.item.username,
                         icon: Icons.person,
                         onCopy: () =>
-                            _copyToClipboard(widget.item.username, '用户名'),
+                            ClipboardHelper.copyToClipboard(context, widget.item.username, '用户名'),
                       ),
                       const SizedBox(height: 12),
                       // 密码
@@ -305,7 +300,7 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
                           () => _obscurePassword = !_obscurePassword,
                         ),
                         onCopy: () =>
-                            _copyToClipboard(widget.item.password, '密码'),
+                            ClipboardHelper.copyToClipboard(context, widget.item.password, '密码'),
                       ),
                     ],
                   ),
@@ -324,7 +319,7 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
                             : '未设置',
                         icon: Icons.link,
                         onCopy: () =>
-                            _copyToClipboard(widget.item.website, '网站'),
+                            ClipboardHelper.copyToClipboard(context, widget.item.website, '网站'),
                       ),
                       const SizedBox(height: 12),
                       // 备注
@@ -334,7 +329,7 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
                             ? widget.item.notes
                             : '未添加任何备注',
                         icon: Icons.note,
-                        onCopy: () => _copyToClipboard(widget.item.notes, '备注'),
+                        onCopy: () => ClipboardHelper.copyToClipboard(context, widget.item.notes, '备注'),
                       ),
                     ],
                   ),
@@ -387,7 +382,8 @@ class _PasswordItemTileState extends State<PasswordItemTile> {
                         onTap: () async {
                           String url = value;
                           // 确保URL有协议前缀
-                          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                          if (!url.startsWith('http://') &&
+                              !url.startsWith('https://')) {
                             url = 'https://$url';
                           }
                           bool success = await UrlLauncherHelper.launchUrl(url);
